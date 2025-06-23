@@ -20,6 +20,8 @@ connectDB()
 
 
 /*
+import mongoose from "mongoose";
+import {db_name} from './constants'
 import express from 'express'
 const app = express()
 
