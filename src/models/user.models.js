@@ -47,17 +47,17 @@ const userSchema = new mongoose.Schema({
     },
 },{timestamps: true})
 
-userSchema.pre("save", async function(next){
+userSchema.pre("save", async function(next){  //Pre middleware functions are executed before the specified operation (e.g., save, update, remove). You can use pre middleware to perform actions like validation, encryption, or logging before saving, updating, or removing documents from the database.
     
     if(!this.isModified("password")) return next();
 
-    this.password = bcrypt.hash(this.password, 10)
+    this.password = await bcrypt.hash(this.password, 10)
     next() 
 })
 userSchema.methods.isPassCorrect = async function(password) {
     return await bcrypt.compare(password,this.password)    
 }
-userSchema.methods.generateAccessToken = async function() {
+userSchema.methods.generateAccessToken = function() {  //the spy green shield operation
     return jwt.sign(
         {
             _id: this._id,
@@ -71,7 +71,7 @@ userSchema.methods.generateAccessToken = async function() {
         }
     )
 }
-userSchema.methods.generateRefreshToken = async function() {
+userSchema.methods.generateRefreshToken = function() {
     return jwt.sign(
         {
             _id: this._id,
