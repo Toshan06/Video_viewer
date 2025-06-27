@@ -9,4 +9,4 @@ const multerStorage = multer.diskStorage({
     }
 })
 
-export const upload = multer({ multerStorage }) 
+export const upload = multer({ multerStorage })
