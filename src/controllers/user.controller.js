@@ -31,7 +31,7 @@ const registerUser = asyncHandler(async (req,res) => {
         throw new ApiError(400,"All fields are required.")
     }
 
-    if(email.includes("@")){
+    if(!email.includes("@")){
         throw new ApiError(400,"@ in email is required.")
     }
 
@@ -47,7 +47,7 @@ const registerUser = asyncHandler(async (req,res) => {
         throw new ApiError(400,"Password is wrong, it should have min 5 characters, atleast a digit, and atleast a letter.")
     }
 
-    const existingUser = User.findOne({
+    const existingUser = await User.findOne({
         $or: [{ username },{ email }]
     })
     if(existingUser){
@@ -55,13 +55,20 @@ const registerUser = asyncHandler(async (req,res) => {
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path
-    const coverImgLocalPath = req.files?.coberImg[0]?.path
+    //const coverImgLocalPath = req.files?.coverImg[0]?.path
+
+    let coverImgLocalPath;
+    if(req.files && Array.isArray(req.files.coverImg) && req.files.coverImg.length > 0){
+        coverImgLocalPath = req.files.coverImg[0].path
+    }
+    
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar is required.")
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImg = await uploadOnCloudinary(coverImgLocalPath)
+    const coverImg = await uploadOnCloudinary(coverImgLocalPath);
+    
 
     if(!avatar){
         throw new ApiError(400,"Avatar is required")
@@ -71,21 +78,21 @@ const registerUser = asyncHandler(async (req,res) => {
     const user = await User.create({
         fullname,
         avatar: avatar.url,
-        coverImg: coverImg?.url || "",
+        coverImg: coverImg.url,
         email,
         password,
-        username
+        username,
     })
 
-    const createdUser = await User.findById(user._id).select(
-        "-password -refreshToken" //write whatever are not required to be removed
+    const createdUser = await User.findById(user._id).select(           //remove password and refresh token field from response
+        "-password -refreshToken" //write whatever are not required to be removed 
     )
 
     if(!createdUser){
         throw new ApiError(500, "Something went wrong while registration.")
     }
 
-    return res.status(201).jsson(new ApiResponse(200,createdUser,"User Registration Complete."))
+    return res.status(201).json(new ApiResponse(200,createdUser,"User Registration Complete."))
 
 })
 

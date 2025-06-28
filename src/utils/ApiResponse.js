@@ -1,3 +1,5 @@
+//A reusable wwrapper to handle responses from the server clearly.
+
 class ApiResponse {
     constructor(statusCode,data,message = 'Success'){
         this.statusCode = statusCode,

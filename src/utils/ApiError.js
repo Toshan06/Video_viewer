@@ -1,3 +1,5 @@
+//A reusable wrapper to handle errors clearly. It helps standardize how errors are thrown and caught across your app.
+
 class ApiError extends Error{
     constructor(
         statusCode,

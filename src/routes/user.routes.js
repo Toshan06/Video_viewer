@@ -10,7 +10,7 @@ router.post('/register',upload.fields([
     },
     {
         name: "coverImg",
-        maxCount: 1
+        maxCount: 1,
     }
 ]),registerUser);
 export default router
