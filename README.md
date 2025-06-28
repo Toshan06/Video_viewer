@@ -1,2 +1,2 @@
 # Project regarding a Video-showing app.
-## JavaScript, Express and Mongoose used.
+## JavaScript, Express and Mongoose used (MERN)

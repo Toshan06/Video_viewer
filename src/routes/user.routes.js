@@ -1,6 +1,8 @@
 import e from "express";
 import {upload} from "../middlewares/multer.middleware.js"
-import { registerUser } from "../controllers/user.controller.js";
+import { registerUser,loginUser, logoutUser } from "../controllers/user.controller.js";
+import verifyJWT from "../middlewares/auth.middleware.js";
+
 
 const router = e.Router()
 router.post('/register',upload.fields([
@@ -13,6 +15,13 @@ router.post('/register',upload.fields([
         maxCount: 1,
     }
 ]),registerUser);
+
+router.route('/login').post(loginUser)
+
+
+//Secured Routes
+router.route('/logout').post(verifyJWT,logoutUser) //next() function in verifyJWT worked
+
 export default router
 
 //http://localhost:8000/api/v1/users/register
